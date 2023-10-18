@@ -1,0 +1,103 @@
+//{ Driver Code Starts
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class GFG {
+    
+    
+	public static void main (String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(br.readLine().trim());
+		while(t-->0){
+		    long n = Long.parseLong(br.readLine().trim());
+		    String inputLine[] = br.readLine().trim().split(" ");
+		    long[] arr = new long[(int)n];
+		    for(int i=0; i<n; i++)arr[i]=Long.parseLong(inputLine[i]);
+		    System.out.println(new Solution().getMaxArea(arr, n));
+		}
+	}
+}
+
+// } Driver Code Ends
+
+class Pair{
+    long key ;
+    long value ;
+    public Pair(long key , long value){
+        this.key = key ;
+        this.value = value ;
+    }
+}
+class Solution {
+    //NSL 6 2 5 4 5 1 6 ---> -1 -1 2 2 2 -1 1
+    public static long[] NSL(long[] arr, long n) {
+        long[] left = new long[(int)n];
+        Stack<Pair> stack = new Stack<>();
+        for (int i = 0; i < n; i++) {
+            if (stack.isEmpty()) {
+                left[i] = -1L;
+            } else if (!stack.isEmpty() && stack.peek().value < arr[i]) {
+                left[i] = stack.peek().key;
+            } else if (!stack.isEmpty() && stack.peek().value >= arr[i]) {
+                while (!stack.isEmpty() && stack.peek().value >= arr[i]) {
+                    stack.pop();
+                }
+                if (stack.isEmpty()) {
+                    left[i] = -1L;
+                } else {
+                    left[i] = stack.peek().key;
+                }
+            }
+            stack.push(new Pair(i, arr[i]));
+        }
+        return left;
+    }
+    
+    public static long[] NSR(long[] arr, long n) {
+        // output --> 2 1 1 1 1 -1 -1 
+        long[] right = new long[(int)n];
+        Stack<Pair> stack = new Stack<>();
+        for (int i = (int)n - 1; i >= 0; i--) {
+            if (stack.isEmpty()) {
+                right[i] = n ;
+            } else if (!stack.isEmpty() && stack.peek().value < arr[i]) {
+                right[i] = stack.peek().key;
+            } else if (!stack.isEmpty() && stack.peek().value >= arr[i]) {
+                while (!stack.isEmpty() && stack.peek().value >= arr[i]) {
+                    stack.pop();
+                }
+                if (stack.isEmpty()) {
+                    right[i] = n ;
+                } else {
+                    right[i] = stack.peek().key;
+                }
+            }
+            stack.push(new Pair(i, arr[i]));
+        }
+        return right;
+    }
+    
+    // Function to find the largest rectangular area possible in a given histogram.
+    public static long getMaxArea(long hist[], long n) {
+        // Initialize the left and right arrays with a size of n+1.
+        long[] right = NSR(hist, n);
+        long[] left = NSL(hist, n);
+        long[] width = new long[(int)n];  // Increase the size by 1.
+        for (int i = 0; i < n; i++) { // -4 -3 0 0 0 -1 1
+            width[i] = right[i] - left[i] - 1 ; 
+        }
+        long[] area = new long[(int)n];  // Increase the size by 1.
+        for (int i = 0; i < n; i++) {
+            area[i] = hist[i] * width[i]; //24 6 1 6 
+        }
+        long maxArea = 0L;
+        for (int i = 0; i < n; i++) {
+            maxArea = Math.max(maxArea, area[i]);
+        }
+        return maxArea;
+    }
+}
+
+
+
