@@ -1,0 +1,104 @@
+//{ Driver Code Starts
+import java.util.*;
+
+
+
+class Get_Min_From_Stack
+{
+	public static void main(String args[])
+	{
+		Scanner sc = new Scanner(System.in);
+		int T = sc.nextInt();
+		while(T>0)
+		{
+			int q = sc.nextInt();
+			GfG g = new GfG();
+			while(q>0)
+			{
+				int qt = sc.nextInt();
+				
+				if(qt == 1)
+				{
+					int att = sc.nextInt();
+					g.push(att);
+					//System.out.println(att);
+				}
+				else if(qt == 2)
+				{
+					System.out.print(g.pop()+" ");
+				}
+				else if(qt == 3)
+				{
+					System.out.print(g.getMin()+" ");
+				}
+			
+			q--;
+			}
+			System.out.println();
+		T--;
+		}
+		
+	}
+}
+
+
+
+// } Driver Code Ends
+
+// always remember this example ----> stack -->(5) , new element = 3
+class GfG
+{
+    int minEle;
+    Stack<Integer> stack;
+    
+    // Constructor    
+    GfG()
+	{
+	    stack = new Stack<>() ;
+	    minEle = -1 ;
+
+	}
+	
+    /*returns min element from stack*/
+    int getMin()
+    {
+	// Your code here
+	if(stack.isEmpty()){
+	    return -1 ;
+	}
+	return minEle ;
+    }
+    
+    /*returns poped element from stack*/
+    int pop()
+    {
+        if(stack.isEmpty()){
+            return -1 ;
+        }
+        int popped = stack.pop() ;
+        if(!stack.isEmpty() && popped < minEle){
+            int temp = minEle ;
+            minEle = 2*minEle - popped;
+            popped = temp ;
+        }
+        return popped ;
+	// Your code here	
+    }
+
+    /*push element x into the stack*/
+    void push(int x)
+    {
+	// Your code here
+	if(stack.isEmpty()){
+	    stack.add(x) ;
+	    minEle = x ;
+	}else if(!stack.isEmpty() && x >= minEle){
+	    stack.add(x) ;
+	}
+	else if(!stack.isEmpty() && x < minEle){
+	    stack.add(2*x - minEle) ;
+	    minEle = x ;
+	}
+    }	
+}
+
