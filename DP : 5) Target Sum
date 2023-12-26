@@ -1,0 +1,44 @@
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int n  = nums.length ;
+        if(n == 1 && (Math.abs(target) != nums[0])){
+            return 0 ;
+
+        }
+        int sum = 0 ;
+        //sum
+        for(int i = 0 ; i<n ; i++){
+            sum = sum + nums[i] ;
+        }
+        int TotalSum = target + sum ;
+        //checking odd case
+        if(TotalSum % 2 != 0 || sum < Math.abs(target) ){
+            return 0 ;
+        }
+        int sum2 = TotalSum/2 ;
+        int count = countdiff(nums,sum2,n) ;
+        return count ;
+    }
+    int countdiff(int[] arr , int sum , int n){
+        int[][] dp = new int[n+1][sum+1] ;
+        for(int i = 0 ; i<n+1 ;i++){
+            for(int j = 0 ; j<sum+1 ; j++){
+                if(i == 0 && j == 0){
+                    dp[i][j] = 1 ;
+                }else{
+                    dp[i][j] = 0 ;
+                }
+            }
+        }
+        for(int i = 1 ; i<n+1 ; i++){
+            for(int j = 0 ; j<sum+1 ; j++){
+                if(arr[i-1]<=j){
+                    dp[i][j] = dp[i-1][j-arr[i-1]] + dp[i-1][j] ;
+                }else{
+                    dp[i][j] = dp[i-1][j] ;
+                }
+            }
+        }
+        return dp[n][sum] ;
+    }
+}
