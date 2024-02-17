@@ -1,0 +1,77 @@
+//{ Driver Code Starts
+//Initial Template for JAVA
+
+import java.io.*;
+import java.util.*;
+
+class GFG {
+    public static void main(String args[]) throws IOException {
+        BufferedReader read =
+            new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(read.readLine());
+        while (t-- > 0) {
+            int N = Integer.parseInt(read.readLine());
+            
+            String S[] = read.readLine().split(" ");
+            
+            int[] A = new int[N];
+            
+            for(int i=0 ; i<N ; i++){
+                A[i] = Integer.parseInt(S[i]);
+            }
+            int target = Integer.parseInt(read.readLine());
+
+            Solution ob = new Solution();
+            System.out.println(ob.findTargetSumWays(N,A, target));
+        }
+    }
+}
+// } Driver Code Ends
+
+
+//User function Template for Java
+
+class Solution {
+    static int findTargetSumWays( int N, int[] A ,int target) {
+        // code here
+        for(int i = 0 ; i<N ; i++){
+            A[i] = Math.abs(A[i]) ;
+        }
+        target = Math.abs(target) ;
+        int sum = 0 ;
+        
+        for(int i = 0 ; i<N ; i++){
+            sum = sum + A[i] ;
+        }
+        int totalsum = target + sum ;
+        //checking odd case
+        if(totalsum % 2 != 0 || sum < target ){
+            return 0 ;
+        }
+        // if (sum == 0) {
+        //     return 1 << N; // Efficiently calculate 2 raised to the power of N
+        // }
+        int mod = (int)(1e9+7) ;
+        int sum2 = (target+sum)/2 ;
+        int[][] dp = new int[N+1][sum2+1] ;
+        for(int i = 0 ; i<N+1 ; i++){
+            for(int j = 0 ; j<sum2+1; j++){
+                if(i == 0 ){
+                    dp[i][j] = 0;
+                }if(j == 0){
+                    dp[i][j] = 1 ;
+                }
+            }
+        }
+        for(int i = 1 ; i<N+1 ;i++){
+            for(int j = 0 ; j<sum2+1 ; j++){
+                if(A[i-1] <= j){
+                    dp[i][j] = (dp[i-1][j-A[i-1]] + dp[i-1][j])%mod ;
+                }else{
+                    dp[i][j] = (dp[i-1][j])%mod ; 
+                }
+            }
+        }
+        return dp[N][sum2] ;
+    }
+};
